@@ -2,8 +2,61 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Container, Row, Col, FormGroup, FormControl } from 'react-bootstrap';
 import marked from 'marked';
-import htmlParser from 'html-react-parser';
+//import htmlParser from 'html-react-parser';
 import DOMpurify from 'dompurify';
+
+//#region Inital Markdown
+const initialText = `
+# Welcome to my React Markdown Previewer!
+
+## This is a sub-heading...
+
+### And here's some other cool stuff:
+
+Heres some code, \`<div></div>\`, between 2 backticks.
+
+\`\`\`\`
+// this is multi-line code:
+
+function anotherExample(firstLine, lastLine) {
+  if (firstLine == '\`\`\`' && lastLine == '\`\`\`') {
+    return multiLineCode;
+  }
+}
+\`\`\`\`
+
+You can also make text **bold**... whoa!
+Or _italic_.
+Or... wait for it... **_both!_**
+And feel free to go crazy ~~crossing stuff out~~.
+
+There's also [links](https://www.freecodecamp.com), and
+
+> Block Quotes!
+
+And if you want to get really crazy, even tables:
+
+| Wild Header      | Crazy Header    | Another Header?    |
+| ---------------- | --------------- | ------------------ |
+| Your content can | be here, and it | can be here....    |
+| And here.        | Okay.           | I think we get it. |
+
+- And of course there are lists.
+  - Some are bulleted.
+    - With different indentation levels.
+      - That look like this.
+
+1. And there are numbererd lists too.
+1. Use just 1s if you want!
+1. But the list goes on...
+
+- Even if you use dashes or asterisks.
+
+* And last but not least, let's not forget embedded images:
+
+![React Logo w/ Text](https://goo.gl/Umyytc)`
+//#endregion
+
 
 // Main
 function App() {
@@ -11,47 +64,43 @@ function App() {
   const [htmlOutput, setHtmlOutput] = useState();
 
   useEffect(() => {
-    /** SET HTML OUTPUT FOR PREVIEW
-     * This function chain returns the html-parsed, sanitized, marked version of the input text.
-     * It works like this (see from inside out):
-     * 1. marked() takes the textInput with options
-     * 2. The result of marked gets sanitized with DOMpurify in order to prevent XSS
-     * The result of DOMpurify gets parsed via HTML parser
-     * to return valid html
-     */
-    setHtmlOutput(
-      htmlParser(
-        DOMpurify.sanitize(
-          marked(textInput, {
-            //MarkedJS Options
-            breaks: true
-          })
-        )
-      )
-    );
+    setHtmlOutput(mdToHtml(textInput));
   }, [textInput]);
 
-  useEffect(() => {
-    console.log(htmlOutput);
-  }, [htmlOutput]);
 
+  useEffect(() => {
+  setTextInput(initialText)
+  setHtmlOutput(mdToHtml(textInput))
+  },[]);
+
+  const mdToHtml = text =>
+    DOMpurify.sanitize(
+      marked(text, {
+        //MarkedJS Options
+        breaks: true
+      })
+    );
   return (
     <div className='App'>
       <Container fluid='true'>
-        <Row style={{ minHeight: '100vh' }}>
-          <Col md={6} className='markdownEditor'>
+        <Row id="flexContainer" style={{ minHeight: '100vh' }}>
+          <Col id='markdownEditor'>
             <FormGroup>
               <FormControl
                 id='editor'
                 as='textarea'
                 onChange={event => setTextInput(event.target.value)}
                 bsPrefix={'markdownEditorText'}
+                defaultValue={initialText}
               />
             </FormGroup>
           </Col>
-          <Col id='preview' className='htmlOutputCol'>
-            {htmlOutput}
-          </Col>
+          <Col
+            
+            id='preview'
+            className='htmlOutputCol'
+            dangerouslySetInnerHTML={{ __html: htmlOutput }}
+          ></Col>
         </Row>
       </Container>
     </div>
