@@ -5,6 +5,7 @@ import marked from 'marked';
 import htmlParser from 'html-react-parser';
 import DOMpurify from 'dompurify';
 
+// Main
 function App() {
   const [textInput, setTextInput] = useState('');
   const [htmlOutput, setHtmlOutput] = useState();
