@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Container, Row, Col, FormGroup, FormControl } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  FormGroup,
+  FormControl,
+  Accordion,
+  Button,
+  Card
+} from 'react-bootstrap';
 import marked from 'marked';
 //import htmlParser from 'html-react-parser';
 import DOMpurify from 'dompurify';
@@ -91,34 +100,47 @@ function App() {
       let editorText = event.target.value;
       let start = editorText.slice(0, index);
       let end = editorText.slice(index);
-      
-      event.target.value=`${start}&emsp;${end}`;
+
+      event.target.value = `${start}&emsp;${end}`;
       event.target.selectionEnd = event.target.selectionEnd + 1;
     }
   };
 
   return (
     <div className='App'>
-      <Container fluid='true'>
-        <Row id='flexContainer' style={{ minHeight: '100vh' }}>
-          <Col id='markdownEditor'>
-            <FormGroup>
-              <FormControl
-                id='editor'
-                as='textarea'
-                onKeyDown={event => insertTab(event)}
-                onChange={event => setTextInput(event.target.value)}
-                bsPrefix={'markdownEditorText'}
-                defaultValue={initialText}
-              />
-            </FormGroup>
-          </Col>
-          <Col
-            id='preview'
-            className='htmlOutputCol'
-            dangerouslySetInnerHTML={{ __html: htmlOutput }}
-          ></Col>
-        </Row>
+      <Container fluid='true' id='container'>
+        <Accordion defaultActiveKey='0'>
+          <Accordion.Collapse eventKey='0'>
+            <Row id='flexContainer' style={{ minHeight: '100vh' }}>
+              <Col id='markdownEditor'>
+                <FormGroup>
+                  <FormControl
+                    id='editor'
+                    as='textarea'
+                    onKeyDown={event => insertTab(event)}
+                    onChange={event => setTextInput(event.target.value)}
+                    bsPrefix={'markdownEditorText'}
+                    defaultValue={initialText}
+                  />
+                </FormGroup>
+              </Col>
+              <Col
+                id='preview'
+                className='htmlOutputCol'
+                dangerouslySetInnerHTML={{ __html: htmlOutput }}
+              ></Col>
+            </Row>
+          </Accordion.Collapse>
+          <div id='toggler'>
+            <Accordion.Toggle as={Button} variant='link' eventKey='0'>
+              Toggle Editor/Preview
+            </Accordion.Toggle>
+          </div>
+        </Accordion>
+        <footer id="footer">
+        Copyright &copy;{' '}
+          <a href='http://www.capito.rocks'>Christopher Capito</a>
+        </footer>
       </Container>
     </div>
   );
