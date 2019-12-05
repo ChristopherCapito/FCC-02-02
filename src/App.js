@@ -54,25 +54,26 @@ And if you want to get really crazy, even tables:
 
 * And last but not least, let's not forget embedded images:
 
-![React Logo w/ Text](https://goo.gl/Umyytc)`
+![React Logo w/ Text](https://goo.gl/Umyytc)`;
 //#endregion
-
 
 // Main
 function App() {
   const [textInput, setTextInput] = useState('');
   const [htmlOutput, setHtmlOutput] = useState();
 
+  //Watch for text change and convert
   useEffect(() => {
     setHtmlOutput(mdToHtml(textInput));
   }, [textInput]);
 
-
+  //On Load set some markdown
   useEffect(() => {
-  setTextInput(initialText)
-  setHtmlOutput(mdToHtml(textInput))
-  },[]);
+    setTextInput(initialText);
+    setHtmlOutput(mdToHtml(textInput));
+  }, []);
 
+  //Convert markdown to html
   const mdToHtml = text =>
     DOMpurify.sanitize(
       marked(text, {
@@ -80,15 +81,32 @@ function App() {
         breaks: true
       })
     );
+
+  const insertTab = event => {
+    if (event.key == 'Tab') {
+      event.preventDefault();
+      let index = event.target.selectionStart;
+      console.log('Tabbed');
+      console.log(index);
+      let editorText = event.target.value;
+      let start = editorText.slice(0, index);
+      let end = editorText.slice(index);
+      
+      event.target.value=`${start}&emsp;${end}`;
+      event.target.selectionEnd = event.target.selectionEnd + 1;
+    }
+  };
+
   return (
     <div className='App'>
       <Container fluid='true'>
-        <Row id="flexContainer" style={{ minHeight: '100vh' }}>
+        <Row id='flexContainer' style={{ minHeight: '100vh' }}>
           <Col id='markdownEditor'>
             <FormGroup>
               <FormControl
                 id='editor'
                 as='textarea'
+                onKeyDown={event => insertTab(event)}
                 onChange={event => setTextInput(event.target.value)}
                 bsPrefix={'markdownEditorText'}
                 defaultValue={initialText}
@@ -96,7 +114,6 @@ function App() {
             </FormGroup>
           </Col>
           <Col
-            
             id='preview'
             className='htmlOutputCol'
             dangerouslySetInnerHTML={{ __html: htmlOutput }}
