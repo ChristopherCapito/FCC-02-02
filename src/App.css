@@ -46,12 +46,12 @@ html {
   margin: 0;
 }
 
-#footer{
+#footer {
   text-align: center;
   text-decoration: none;
-  color: var(--medium-color);  
+  color: var(--medium-color);
 }
-#footer a{
+#footer a {
   font-weight: 500;
   color: var(--medium-color);
 }
@@ -60,6 +60,7 @@ html {
   font-size: 16px;
   color: var(--medium-color);
   font-weight: 500;
+  padding-top: 16px;
   width: 100%;
   background: transparent;
   height: 100%;
